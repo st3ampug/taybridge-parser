@@ -73,7 +73,7 @@ const handlers = {
                 }
 
                 mytwitter.get('statuses/user_timeline', tparams, function(err, data, response) {
-                    var txt = data[data.length-1].text;
+                    var txt = data[data.length-1].full_text;
         
                     if(err) {
                         myTwitterResponse.Success = false;
@@ -97,7 +97,7 @@ const handlers = {
             } else {
           
               console.log("Async success");
-              myalexa.emit(":tell", myalexa.t('HELLO_MESSAGE') + " " + replyUsingBothResponses(results));
+              myalexa.emit(":tell", myalexa.t('HELLO_MESSAGE') + addPause(2) + replyUsingBothResponses(results));
     
             }
           })
@@ -120,7 +120,7 @@ const handlers = {
         var myalexa = this;
 
         T.get('statuses/user_timeline', tparams, function(err, data, response) {
-            var txt = data[data.length-1].text;
+            var txt = data[data.length-1].full_text;
 
             if(err)
                 myalexa.emit(":tell", textResponses.CouldNotGetTweet);
@@ -178,7 +178,7 @@ function replyUsingBothResponses(arr) {
 
         if(myWebsiteResponse.Success && myTwitterResponse.Success) {
             txt = textResponses.StatusSuccessLaunch + myWebsiteResponse.Msg +
-                " and " +
+                addPause(1) + " and " +
                 textResponses.TweetSuccessLaunch + myTwitterResponse.Msg;
         } else if (myWebsiteResponse.Success) {
             txt = textResponses.StatusSuccessLaunch + myWebsiteResponse.Msg;
@@ -192,4 +192,8 @@ function replyUsingBothResponses(arr) {
     } else {
         return textResponses.GeneralIssueLong;
     }
+}
+
+function addPause(num) {
+    return "<break time='" + num + "s'/>"
 }
