@@ -152,8 +152,15 @@ exports.handler = function (event, context) {
 
 function parseMyHtml(requestBody) {
     const $ = cheerio.load(requestBody);
-    console.log($('.statusHighlight').text());
-    return $('.statusHighlight').text();
+    var txt;
+    
+    if($('.statusHighlight').text().length > 0)
+        txt = textResponses.StatusSuccessPartial + $('.statusHighlight').text();
+    else
+        txt = $('.restrictionDescription').text();
+    
+    console.log(txt);
+    return txt;
 }
 
 function replyWithSentence(type, status) {
@@ -162,7 +169,10 @@ function replyWithSentence(type, status) {
             return textResponses.TweetSuccessPartial + status;
             break;
         case "post":
-            return textResponses.StatusSuccessPartial + status;
+            if(status.length == 0)
+                return textResponses.WebsiteUnrecognisedText;
+            else
+                return status;
             break;
         default:
             return status;

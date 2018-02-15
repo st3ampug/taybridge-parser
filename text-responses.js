@@ -6,5 +6,6 @@ module.exports = {
     StatusSuccessPartial: "Bridge should be ",
     TweetSuccessPartial: "Latest tweet reads: ",
     StatusSuccessLaunch: "Here is the latest status: ",
-    TweetSuccessLaunch: "Here is the latest tweet: "
+    TweetSuccessLaunch: "Here is the latest tweet: ",
+    WebsiteUnrecognisedText: "Unrecognised text on website"
 }
