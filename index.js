@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Alexa = require("alexa-sdk");
 const APP_ID = process.env.AWS_ALEXA_ID;
 var async = require('async');
-var request = require('request');s
+var request = require('request');
 const cheerio = require('cheerio');
 var Twit = require('twit');
 var config = require("./Access/config.js");
