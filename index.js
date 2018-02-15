@@ -4,11 +4,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Alexa = require("alexa-sdk");
 const APP_ID = process.env.AWS_ALEXA_ID;
 var async = require('async');
-var request = require('request');
+var request = require('request');s
 const cheerio = require('cheerio');
 var Twit = require('twit');
 var config = require("./Access/config.js");
 var T = new Twit(config.twitterConfig);
+const textResponses = require("./text-responses.js");
 
 const languageStrings = {
     'en': {
@@ -22,23 +23,13 @@ const languageStrings = {
     }
 };
 
-const textResponses = {
-    CouldNotGetStatus: "Something went wrong with getting the status",
-    CouldNotGetTweet: "Something went wrong with getting the latest tweet",
-    GeneralIssueShort: "Something went wrong, please try again in a few minutes",
-    GeneralIssueLong: "Hm, something must have gone wrong, let me rest for a few minutes please and try again.",
-    StatusSuccessPartial: "Bridge should be ",
-    TweetSuccessPartial: "Latest tweet reads: ",
-    StatusSuccessLaunch: "Here is the latest status: ",
-    TweetSuccessLaunch: "Here is the latest tweet: "
-}
-
 var tparams = {
     user_id: 3994042942,
     count: 1,
     exclude_replies: true,
     include_rts: false,
-    trim_user: true
+    trim_user: true,
+    tweet_mode: "extended"
 }
 
 
