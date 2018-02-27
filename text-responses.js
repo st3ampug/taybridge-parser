@@ -7,5 +7,22 @@ module.exports = {
     TweetSuccessPartial: "Latest tweet reads: ",
     StatusSuccessLaunch: "Here is the latest status: ",
     TweetSuccessLaunch: "Here is the latest tweet: ",
-    WebsiteUnrecognisedText: "Unrecognised text on website"
+    WebsiteUnrecognisedText: "Unrecognised text on website",
+    Greetings: {
+        Morning: [
+            "Good morning, "
+        ],
+        Day: [
+            "Good day, "
+        ],
+        Evening: [
+            "Good evening, "
+        ],
+        General: [
+            "Hi, ",
+            "Heya, ",
+            "Howdy",
+            "Hey there"
+        ]
+    }
 }
