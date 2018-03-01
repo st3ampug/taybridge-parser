@@ -26,7 +26,7 @@ datapoint.set_key(weatherConfig.apikey);
 const languageStrings = {
     'en': {
         translation: {
-            HELLO_MESSAGE: 'Hi there, I am here to help with getting information about the bridge\'s status!',
+            HELLO_MESSAGE: 'Hi there, I am here to help with getting information about the Tay Bridge!',
             SKILL_NAME: 'Tay Bridge',
             HELP_MESSAGE: 'Ask me about the bridge\'s status',
             HELP_REPROMPT: 'What can I help you with?',
