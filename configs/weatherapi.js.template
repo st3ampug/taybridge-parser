@@ -1,0 +1,12 @@
+module.exports = {
+    apikey: "",
+    units: "metric",
+    language: "en",
+    location: {
+        // Tay Road Bridge
+        lat: 56.4606379,
+        long: -2.9788443,
+        update: "3hourly",
+        siteid: 310063
+    }
+}

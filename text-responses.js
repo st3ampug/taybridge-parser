@@ -24,5 +24,16 @@ module.exports = {
             "Howdy",
             "Hey there, "
         ]
+    },
+    Weather: {
+        Intro: "In the next hours ",
+        Visibility: "visibility should be ",
+        Temperature: "temperature can be",
+        WindSpeed: "wind speeds could get to ",
+        GustSpeed: "wind speeds might go up to ",
+        Units: {
+            Temp: "Celsius",
+            Speed: "miles per hour"
+        }
     }
 }
