@@ -1,15 +1,28 @@
 'use strict'
 
 Object.defineProperty(exports, "__esModule", { value: true });
+
+const config            = require("./Access/config.js");
+const textResponses     = require("./text-responses.js");
+var logger              = require("./mylogger.js");
+var wp                  = require("./weatherparser.js");
+const weatherConfig     = require("./configs/weatherapi.js");
+
+
 const Alexa = require("alexa-sdk");
 const APP_ID = process.env.AWS_ALEXA_ID;
+
 var async = require('async');
 var request = require('request');
 const cheerio = require('cheerio');
+
 var Twit = require('twit');
-const config = require("./Access/config.js");
 var T = new Twit(config.twitterConfig);
-const textResponses = require("./text-responses.js");
+
+var datapoint = require('datapoint-js');
+datapoint.set_key(weatherConfig.apikey);
+var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
+                                                weatherConfig.location.update);
 
 const languageStrings = {
     'en': {
@@ -128,6 +141,16 @@ const handlers = {
                 myalexa.emit(":tell", replyWithSentence("tweet", txt));
         });
     },
+    'GetWeatherInfo': function () {
+        var myalexa = this;
+
+        // TODO
+    },
+    'PredictBridgeStatus': function () {
+        var myalexa = this;
+
+        // TODO
+    },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
         const reprompt = this.t('HELP_MESSAGE');
@@ -149,6 +172,8 @@ exports.handler = function (event, context) {
     alexa.registerHandlers(handlers);
     alexa.execute();
 };
+
+// Private
 
 function parseMyHtml(requestBody) {
     const $ = cheerio.load(requestBody);
