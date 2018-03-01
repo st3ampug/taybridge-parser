@@ -15,14 +15,13 @@ const APP_ID = process.env.AWS_ALEXA_ID;
 var async = require('async');
 var request = require('request');
 const cheerio = require('cheerio');
+var moment = require('moment-timezone');
 
 var Twit = require('twit');
 var T = new Twit(config.twitterConfig);
 
 var datapoint = require('datapoint-js');
 datapoint.set_key(weatherConfig.apikey);
-var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
-                                                weatherConfig.location.update);
 
 const languageStrings = {
     'en': {
@@ -143,13 +142,27 @@ const handlers = {
     },
     'GetWeatherInfo': function () {
         var myalexa = this;
+        var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
+                                                        weatherConfig.location.update);
 
-        // TODO
+        var txt = wp.whatIsTheWeather(forecast.days[0], getCurrentHour);
+
+        if(txt != "")
+            myalexa.emit(":tell", txt);
+        else
+            myalexa.emit(":tell", textResponses.CouldNotGetWeather);
     },
     'PredictBridgeStatus': function () {
         var myalexa = this;
+        var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
+                                                        weatherConfig.location.update);
 
-        // TODO
+        var txt = wp.predictBridgeStatus(forecast.days[0], getCurrentHour);
+
+        if(txt != "")
+            myalexa.emit(":tell", txt);
+        else
+            myalexa.emit(":tell", textResponses.CouldNotGetWeather);
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
@@ -231,4 +244,8 @@ function replyUsingBothResponses(arr) {
 
 function addPause(num) {
     return "<break time='" + num + "s'/>"
+}
+
+function getCurrentHour() {
+    return moment().tz("Europe/London").format('HH');
 }
