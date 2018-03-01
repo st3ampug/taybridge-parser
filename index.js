@@ -7,7 +7,7 @@ var async = require('async');
 var request = require('request');
 const cheerio = require('cheerio');
 var Twit = require('twit');
-var config = require("./Access/config.js");
+const config = require("./Access/config.js");
 var T = new Twit(config.twitterConfig);
 const textResponses = require("./text-responses.js");
 

@@ -1,0 +1,6 @@
+module.exports = {
+    appid: "",
+    units: "metric",
+    language: "en",
+    testPostcode: ""
+}

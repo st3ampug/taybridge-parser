@@ -22,7 +22,7 @@ module.exports = {
             "Hi, ",
             "Heya, ",
             "Howdy",
-            "Hey there"
+            "Hey there, "
         ]
     }
 }
