@@ -9,6 +9,8 @@ module.exports = {
 // To export
 
 function whatIsTheWeather(today, currenthour) {
+    logger.LOG(today);
+    logger.LOG(currenthour);
     const nextts = getNextTimeStep(currenthour);
     const ws = today.timesteps[nextts].wind_speed;
     const gs = today.timesteps[nextts].wind_gust;

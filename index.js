@@ -145,24 +145,37 @@ const handlers = {
         var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
                                                         weatherConfig.location.update);
 
-        var txt = wp.whatIsTheWeather(forecast.days[0], getCurrentHour);
+        async.series([
+            function getForecast(step) {
+                var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
+                    weatherConfig.location.update);
 
-        if(txt != "")
-            myalexa.emit(":tell", txt);
-        else
-            myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+                step(null, forecast);
+            }
+        ], function(err, res) {
+            if(err) {
+                myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+            } else {
+                var txt = wp.whatIsTheWeather(forecast.days[0], getCurrentHour());
+                myalexa.emit(":tell", txt);
+            }
+        });
+            
     },
     'PredictBridgeStatus': function () {
         var myalexa = this;
-        var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
-                                                        weatherConfig.location.update);
 
-        var txt = wp.predictBridgeStatus(forecast.days[0], getCurrentHour);
+        request('http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/' + weatherConfig.location.siteid +
+                '?res=' + weatherConfig.location.update + '?key=' + weatherConfig.apikey, function (error, response, body) {
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
 
-        if(txt != "")
-            myalexa.emit(":tell", txt);
-        else
-            myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+            if(error)
+                myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+            if(body) {
+                var txt = wp.whatIsTheWeather(response.days[0], getCurrentHour());
+                myalexa.emit(":tell", txt);
+            }
+        });
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');

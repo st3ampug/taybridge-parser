@@ -17,6 +17,7 @@
     "datapoint-js": "^0.2.1",
     "moment-timezone": "^0.5.14",
     "request": "^2.83.0",
-    "twit": "^2.2.9"
+    "twit": "^2.2.9",
+    "xml2js": "^0.4.19"
   }
 }
