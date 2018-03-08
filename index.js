@@ -139,6 +139,8 @@ const handlers = {
         });
     },
     'GetWeatherInfo': function () {
+        var myalexa = this;
+
         var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
             "?res=" + weatherConfig.location.update +
             "&key=" + weatherConfig.apikey;
@@ -171,6 +173,8 @@ const handlers = {
         });
     },
     'PredictBridgeStatus': function () {
+        var myalexa = this;
+
         var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
             "?res=" + weatherConfig.location.update +
             "&key=" + weatherConfig.apikey;
