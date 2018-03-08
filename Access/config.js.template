@@ -1,9 +1,31 @@
 module.exports = {
-    twitterConfig: {
-        consumer_key:         '',
-        consumer_secret:      '',
-        access_token:         '',
-        access_token_secret:  '',
-        timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+    twitter: {
+        twit_config: {
+            consumer_key:         '',
+            consumer_secret:      '',
+            access_token:         '',
+            access_token_secret:  '',
+            timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+        },
+        tparams: {
+            user_id: 0,
+            count: 1,
+            exclude_replies: true,
+            include_rts: false,
+            trim_user: true,
+            tweet_mode: "extended"
+        }
+    },
+    weather: {
+        apikey: "",
+        units: "metric",
+        language: "en",
+        location: {
+            // Tay Road Bridge
+            lat: 56.4606379,
+            long: -2.9788443,
+            update: "3hourly",
+            siteid: 310063
+        }
     }
 }

@@ -1,4 +1,15 @@
 module.exports = {
+    alexaLanguageStrings: {
+        'en': {
+            translation: {
+                HELLO_MESSAGE: 'Hi there, I am here to help with getting information about the Tay Bridge!',
+                SKILL_NAME: 'Tay Bridge',
+                HELP_MESSAGE: 'Ask me about the bridge\'s status',
+                HELP_REPROMPT: 'What can I help you with?',
+                STOP_MESSAGE: 'Goodbye!',
+            }
+        }
+    },
     CouldNotGetStatus: "Something went wrong with getting the status",
     CouldNotGetTweet: "Something went wrong with getting the latest tweet",
     CouldNotGetWeather: "Something went wrong with getting the weather information",

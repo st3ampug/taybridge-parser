@@ -1,5 +1,5 @@
 var parser = require('xml2js');
-const tr = require("./text-responses.js");
+const tr = require("../text-responses.js");
 var logger = require("./mylogger.js");
 
 module.exports = {

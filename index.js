@@ -2,51 +2,24 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
-const config            = require("./Access/config.js");
+const config            = require("./access/config.js");
 const textResponses     = require("./text-responses.js");
-var logger              = require("./mylogger.js");
-var wp                  = require("./weatherparser.js");
-const weatherConfig     = require("./configs/weatherapi.js");
-var x2j                 = require("./weatherxml2json.js");
+var logger              = require("./utils/mylogger.js");
+var wp                  = require("./utils/weatherparser.js");
+var x2j                 = require("./utils/weatherxml2json.js");
 
+var async               = require('async');
+var request             = require('request');
+const cheerio           = require('cheerio');
+var moment              = require('moment-timezone');
+var Twit                = require('twit');
+const Alexa             = require("alexa-sdk");
 
-const Alexa = require("alexa-sdk");
-const APP_ID = process.env.AWS_ALEXA_ID;
-
-var async = require('async');
-var request = require('request');
-const cheerio = require('cheerio');
-var moment = require('moment-timezone');
-
-var Twit = require('twit');
-var T = new Twit(config.twitterConfig);
-
-const languageStrings = {
-    'en': {
-        translation: {
-            HELLO_MESSAGE: 'Hi there, I am here to help with getting information about the Tay Bridge!',
-            SKILL_NAME: 'Tay Bridge',
-            HELP_MESSAGE: 'Ask me about the bridge\'s status',
-            HELP_REPROMPT: 'What can I help you with?',
-            STOP_MESSAGE: 'Goodbye!',
-        }
-    }
-};
-
-var tparams = {
-    user_id: 3994042942,
-    count: 1,
-    exclude_replies: true,
-    include_rts: false,
-    trim_user: true,
-    tweet_mode: "extended"
-}
-
+const APP_ID            = process.env.AWS_ALEXA_ID;
+var T                   = new Twit(config.twitter.twit_config);
 
 const handlers = {
     'LaunchRequest': function () {
-        // this.emit(":tell", this.t('HELLO_MESSAGE'));
-
         var myalexa = this;
         var mytwitter = T;
 
@@ -63,7 +36,8 @@ const handlers = {
                 }
 
                 request('http://www.tayroadbridge.co.uk/', function (error, response, body) {
-                    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
+                    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+
                     if(error) {
                         myWebsiteResponse.Success = false;
                         myWebsiteResponse.Msg = textResponses.CouldNotGetStatus;
@@ -82,7 +56,7 @@ const handlers = {
                     Msg: ""
                 }
 
-                mytwitter.get('statuses/user_timeline', tparams, function(err, data, response) {
+                mytwitter.get('statuses/user_timeline', config.twitter.tparams, function(err, data, response) {
                     var txt = data[data.length-1].full_text;
         
                     if(err) {
@@ -98,21 +72,17 @@ const handlers = {
                 });
             }
             
-          ], function(err, results){
+          ], function(err, results) {
             if( err ) {
-          
               console.error('Error: '+err);
               myalexa.emit(":tell", textResponses.GeneralIssueShort);
-          
             } else {
-          
               console.log("Async success");
               myalexa.emit(":tell", myalexa.t('HELLO_MESSAGE') + addPause(1) + replyUsingBothResponses(results));
-    
             }
           })
     },
-    'GetTayBridgeInfo': function () {
+    'GetTayBridgeInfo': function() {
         //this.emit(':tell', this.t('SKILL_NAME'));
         // return the string coming from your request here ^^^
         var myalexa = this;
@@ -126,10 +96,10 @@ const handlers = {
         });
 
     },
-    'GetTayBridgeLatestTweet': function () {
+    'GetTayBridgeLatestTweet': function() {
         var myalexa = this;
 
-        T.get('statuses/user_timeline', tparams, function(err, data, response) {
+        T.get('statuses/user_timeline', config.twitter.tparams, function(err, data, response) {
             var txt = data[data.length-1].full_text;
 
             if(err)
@@ -138,12 +108,12 @@ const handlers = {
                 myalexa.emit(":tell", replyWithSentence("tweet", txt));
         });
     },
-    'GetWeatherInfo': function () {
+    'GetWeatherInfo': function() {
         var myalexa = this;
 
-        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
-            "?res=" + weatherConfig.location.update +
-            "&key=" + weatherConfig.apikey;
+        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + config.weather.location.siteid +
+            "?res=" + config.weather.location.update +
+            "&key=" + config.weather.apikey;
 
         request(url, function (error, response, body) {
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
@@ -172,12 +142,12 @@ const handlers = {
             }
         });
     },
-    'PredictBridgeStatus': function () {
+    'PredictBridgeStatus': function() {
         var myalexa = this;
 
-        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
-            "?res=" + weatherConfig.location.update +
-            "&key=" + weatherConfig.apikey;
+        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + config.weather.location.siteid +
+            "?res=" + config.weather.location.update +
+            "&key=" + config.weather.apikey;
 
         request(url, function (error, response, body) {
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
@@ -205,24 +175,24 @@ const handlers = {
             }
         });
     },
-    'AMAZON.HelpIntent': function () {
+    'AMAZON.HelpIntent': function() {
         const speechOutput = this.t('HELP_MESSAGE');
         const reprompt = this.t('HELP_MESSAGE');
         this.emit(':ask', speechOutput, reprompt);
     },
-    'AMAZON.CancelIntent': function () {
+    'AMAZON.CancelIntent': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));
     },
-    'AMAZON.StopIntent': function () {
+    'AMAZON.StopIntent': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));
     },
 };
   
-exports.handler = function (event, context) {
+exports.handler = function(event, context) {
     const alexa = Alexa.handler(event, context);
     alexa.appId = APP_ID;
     // To enable string internationalization (i18n) features, set a resources object.
-    alexa.resources = languageStrings;
+    alexa.resources = textResponses.alexaLanguageStrings;
     alexa.registerHandlers(handlers);
     alexa.execute();
 };

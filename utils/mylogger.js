@@ -1,4 +1,4 @@
-const config = require("./configs/main.js");
+const config = require("../configs/main.js");
 
 module.exports = {
     LOG
