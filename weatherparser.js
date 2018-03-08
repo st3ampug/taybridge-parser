@@ -1,3 +1,4 @@
+var parser = require('xml2js');
 const tr = require("./text-responses.js");
 var logger = require("./mylogger.js");
 
@@ -9,8 +10,7 @@ module.exports = {
 // To export
 
 function whatIsTheWeather(today, currenthour) {
-    logger.LOG(today);
-    logger.LOG(currenthour);
+
     const nextts = getNextTimeStep(currenthour);
     const ws = today.timesteps[nextts].wind_speed;
     const gs = today.timesteps[nextts].wind_gust;
@@ -36,10 +36,8 @@ function predictBridgeStatus(today, currenthour) {
     const nextts = getNextTimeStep(currenthour);
     const gs = today.timesteps[nextts].wind_gust;
     const v = today.timesteps[nextts].visibility;
-    logger.LOG(gs);
 
-    var txt = tr.Weather.Prediction.Default + tr.Weather.Visibility + resolveVisibility(v);
-    logger.LOG(txt);
+    var txt = tr.Weather.Prediction.Default + "and " + tr.Weather.Visibility + resolveVisibility(v);
 
     if(gs.value >= 80) {
         logger.LOG("over 75");
@@ -54,20 +52,22 @@ function predictBridgeStatus(today, currenthour) {
         txt = tr.Weather.Prediction.Over45 + addPause(1) + addInVisibilityInfo(v);
     }
 
-    logger.LOG(txt);
     return txt;
 }
 
 // Private
 
 function getNextTimeStep(h) {
-    if(h < 9) return 0;
-    if(h < 12) return 1;
-    if(h < 15) return 2;
-    if(h < 18) return 3;
+    if(h < 3) return 0;
+    if(h < 6) return 1;
+    if(h < 9) return 2;
+    if(h < 12) return 3;
+    if(h < 15) return 4;
+    if(h < 18) return 5;
+    if(h < 21) return 6;
 
     //default is the end of day, last timestep
-    return 4;
+    return 7;
 }
 
 function resolveVisibility(v) { 

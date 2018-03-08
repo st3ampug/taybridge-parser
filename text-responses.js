@@ -40,7 +40,7 @@ module.exports = {
             Default: "I think that the bridge should be open ",
             Over45: "There is a chance that the bridge will be closed for double decker buses ",
             Over60: "There is a chance that the bridge will be closed for all vehicles except cars and single decker buses and pedestrians ",
-            Over80: "There is a chance that the bridge will be closed for all vehicles" ,
+            Over80: "There is a chance that the bridge will be closed for all vehicles " ,
             VisibilityAddition: "especially since visibility might be "
         }
     }

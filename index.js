@@ -7,6 +7,7 @@ const textResponses     = require("./text-responses.js");
 var logger              = require("./mylogger.js");
 var wp                  = require("./weatherparser.js");
 const weatherConfig     = require("./configs/weatherapi.js");
+var x2j                 = require("./weatherxml2json.js");
 
 
 const Alexa = require("alexa-sdk");
@@ -19,9 +20,6 @@ var moment = require('moment-timezone');
 
 var Twit = require('twit');
 var T = new Twit(config.twitterConfig);
-
-var datapoint = require('datapoint-js');
-datapoint.set_key(weatherConfig.apikey);
 
 const languageStrings = {
     'en': {
@@ -141,39 +139,65 @@ const handlers = {
         });
     },
     'GetWeatherInfo': function () {
-        var myalexa = this;
-        var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
-                                                        weatherConfig.location.update);
+        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
+            "?res=" + weatherConfig.location.update +
+            "&key=" + weatherConfig.apikey;
 
-        async.series([
-            function getForecast(step) {
-                var forecast = datapoint.get_forecast_for_site(weatherConfig.location.siteid, 
-                    weatherConfig.location.update);
-
-                step(null, forecast);
-            }
-        ], function(err, res) {
-            if(err) {
-                myalexa.emit(":tell", textResponses.CouldNotGetWeather);
-            } else {
-                var txt = wp.whatIsTheWeather(forecast.days[0], getCurrentHour());
-                myalexa.emit(":tell", txt);
-            }
-        });
-            
-    },
-    'PredictBridgeStatus': function () {
-        var myalexa = this;
-
-        request('http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/' + weatherConfig.location.siteid +
-                '?res=' + weatherConfig.location.update + '?key=' + weatherConfig.apikey, function (error, response, body) {
+        request(url, function (error, response, body) {
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
 
-            if(error)
+            if(error) {
+                console.error(error);
                 myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+            }
             if(body) {
-                var txt = wp.whatIsTheWeather(response.days[0], getCurrentHour());
-                myalexa.emit(":tell", txt);
+
+                x2j.parseXmlIntoJSON(body)
+                .then(
+                    function(res) {
+                        var hour = getCurrentHour();
+                        var txt = wp.whatIsTheWeather(res, hour); // WORKS
+                        //var txt = wp.predictBridgeStatus(res, hour);
+                        myalexa.emit(":tell", txt);
+                    }
+                )
+                .catch(
+                    function(err) {
+                        logger.LOG(err);
+                        myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+                    }
+                );
+            }
+        });
+    },
+    'PredictBridgeStatus': function () {
+        var url = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/" + weatherConfig.location.siteid +
+            "?res=" + weatherConfig.location.update +
+            "&key=" + weatherConfig.apikey;
+
+        request(url, function (error, response, body) {
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received    
+
+            if(error) {
+                console.error(error);
+                myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+            }
+            if(body) {
+
+                x2j.parseXmlIntoJSON(body)
+                .then(
+                    function(res) {
+                        var hour = getCurrentHour();
+                        var txt = wp.predictBridgeStatus(res, hour);
+                        myalexa.emit(":tell", txt);
+                    }
+                )
+                .catch(
+                    function(err) {
+                        logger.LOG(err);
+                        myalexa.emit(":tell", textResponses.CouldNotGetWeather);
+                    }
+                );
             }
         });
     },
