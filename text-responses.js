@@ -33,7 +33,7 @@ module.exports = {
         ],
         General: [
             "Hi, ",
-            "Howdy ",
+            "Howdy, ",
             "Hey there, "
         ]
     },
