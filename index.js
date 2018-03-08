@@ -92,7 +92,7 @@ const handlers = {
             if(error)
                 myalexa.emit(":tell", textResponses.CouldNotGetStatus);
             if(body)
-                myalexa.emit(":tell", replyWithSentence("post", parseMyHtml(body)));
+                myalexa.emit(":tell", randomGreeting(getCurrentHour()) + replyWithSentence("post", parseMyHtml(body)));
         });
 
     },
@@ -105,7 +105,7 @@ const handlers = {
             if(err)
                 myalexa.emit(":tell", textResponses.CouldNotGetTweet);
             if(data)
-                myalexa.emit(":tell", replyWithSentence("tweet", txt));
+                myalexa.emit(":tell", randomGreeting(getCurrentHour()) + replyWithSentence("tweet", txt));
         });
     },
     'GetWeatherInfo': function() {
@@ -130,7 +130,7 @@ const handlers = {
                         var hour = getCurrentHour();
                         var txt = wp.whatIsTheWeather(res, hour); // WORKS
                         //var txt = wp.predictBridgeStatus(res, hour);
-                        myalexa.emit(":tell", txt);
+                        myalexa.emit(":tell", randomGreeting(getCurrentHour()) + txt);
                     }
                 )
                 .catch(
@@ -163,7 +163,7 @@ const handlers = {
                     function(res) {
                         var hour = getCurrentHour();
                         var txt = wp.predictBridgeStatus(res, hour);
-                        myalexa.emit(":tell", txt);
+                        myalexa.emit(":tell", randomGreeting(getCurrentHour()) + txt);
                     }
                 )
                 .catch(
@@ -259,4 +259,38 @@ function addPause(num) {
 
 function getCurrentHour() {
     return moment().tz("Europe/London").format('HH');
+}
+
+function randomGreeting(hour) {
+    var myGreetings;
+
+    if(hour >= 5 && hour < 12) {
+        // Morning
+        myGreetings = mergeArrays(textResponses.Greetings.Morning, textResponses.Greetings.General);
+    } else if(hour >= 12 && hour < 17) {
+        // Afternoon
+        myGreetings = mergeArrays(textResponses.Greetings.Day, textResponses.Greetings.General);
+    } else if(hour >= 17 && hour < 21) {
+        // Evening
+        myGreetings = mergeArrays(textResponses.Greetings.Evening, textResponses.Greetings.General);
+    } else {
+        // Night
+        myGreetings = textResponses.Greetings.General;
+    }
+
+    return getRandomArrayItem(myGreetings);
+}
+
+function mergeArrays(a, b) {
+    if(Array.isArray(a) && Array.isArray(b))
+        return a.concat(b);
+}
+
+function getRandomArrayItem(arr) {
+    if(Array.isArray(arr)) {
+        var num = Math.floor((Math.random() * arr.length)); // random number from 0 to array's length
+        return arr[num];
+    } else {
+        return "";
+    }
 }

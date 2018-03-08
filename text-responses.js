@@ -25,15 +25,15 @@ module.exports = {
             "Good morning, "
         ],
         Day: [
-            "Good day, "
+            "Good day, ",
+            "Good afternoon, "
         ],
         Evening: [
             "Good evening, "
         ],
         General: [
             "Hi, ",
-            "Heya, ",
-            "Howdy",
+            "Howdy ",
             "Hey there, "
         ]
     },
