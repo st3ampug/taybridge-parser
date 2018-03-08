@@ -107,7 +107,7 @@ const handlers = {
             } else {
           
               console.log("Async success");
-              myalexa.emit(":tell", myalexa.t('HELLO_MESSAGE') + addPause(2) + replyUsingBothResponses(results));
+              myalexa.emit(":tell", myalexa.t('HELLO_MESSAGE') + addPause(1) + replyUsingBothResponses(results));
     
             }
           })
