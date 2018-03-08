@@ -37,7 +37,7 @@ module.exports = {
             Speed: "miles per hour"
         },
         Prediction: {
-            Default: "I think that the bridge should be open ",
+            Default: "I think that the bridge should be open in the coming hours ",
             Over45: "There is a chance that the bridge will be closed for double decker buses ",
             Over60: "There is a chance that the bridge will be closed for all vehicles except cars and single decker buses and pedestrians ",
             Over80: "There is a chance that the bridge will be closed for all vehicles " ,
