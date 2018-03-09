@@ -57,13 +57,13 @@ const handlers = {
                 }
 
                 mytwitter.get('statuses/user_timeline', config.twitter.tparams, function(err, data, response) {
-                    var txt = data[data.length-1].full_text;
         
                     if(err) {
                         myTwitterResponse.Success = false;
                         myTwitterResponse.Msg = textResponses.CouldNotGetTweet;
                     }
                     if(data) {
+                        var txt = data[data.length-1].full_text;
                         myTwitterResponse.Success = true;
                         myTwitterResponse.Msg = txt;
                     }
@@ -100,12 +100,12 @@ const handlers = {
         var myalexa = this;
 
         T.get('statuses/user_timeline', config.twitter.tparams, function(err, data, response) {
-            var txt = data[data.length-1].full_text;
-
             if(err)
                 myalexa.emit(":tell", textResponses.CouldNotGetTweet);
-            if(data)
+            if(data) {
+                var txt = data[data.length-1].full_text;
                 myalexa.emit(":tell", randomGreeting(getCurrentHour()) + replyWithSentence("tweet", txt));
+            }
         });
     },
     'GetWeatherInfo': function() {
