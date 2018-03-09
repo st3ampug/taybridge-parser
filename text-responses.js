@@ -4,7 +4,7 @@ module.exports = {
             translation: {
                 HELLO_MESSAGE: 'Hi there, I am here to help with getting information about the Tay Bridge!',
                 SKILL_NAME: 'Tay Bridge',
-                HELP_MESSAGE: 'Ask me about the bridge\'s status',
+                HELP_MESSAGE: 'Let\'s see, what can I do, <break time="1"/> I can check the bridge\'s status, read out the latest tweet, check the weather, predict if the bridge will be closed. <break time="1"/>  Good luck!',
                 HELP_REPROMPT: 'What can I help you with?',
                 STOP_MESSAGE: 'Goodbye!',
             }
