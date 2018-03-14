@@ -108,4 +108,6 @@ function addPause(num) {
 function addInVisibilityInfo(v) {
     if(v.value == "MO" || v.value == "PO" || v.value == "VP")
         return tr.Weather.Prediction.VisibilityAddition + resolveVisibility(v);
+    else
+        return "";
 }
